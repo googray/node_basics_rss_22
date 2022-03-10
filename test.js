@@ -140,7 +140,7 @@
 //   console.log("Server is run with port ${PORT}");
 // });
 
-const EventEmitter = require("events");
+// const EventEmitter = require("events");
 
 // const emitter = new EventEmitter();
 ////////
@@ -170,20 +170,52 @@ const EventEmitter = require("events");
 
 // emitter.emit("start");
 
-class User extends EventEmitter {
-  constructor(name, password) {
-    super();
-    this.name = name;
-    this.password = password;
+// class User extends EventEmitter {
+//   constructor(name, password) {
+//     super();
+//     this.name = name;
+//     this.password = password;
+//   }
+
+//   sayHi() {
+//     console.log(`Hi! My name is ${this.name}`);
+//   }
+// }
+
+// const user = new User("Vasya", 12345);
+
+// user.on("greetings", user.sayHi);
+
+// user.emit("greetings");
+
+//////////////////////////
+//STREAM-READABLE
+
+//read
+// const fs = require("fs");
+// // const stream = require('stream')
+// const stream = fs.createReadStream("source.txt", "utf-8");
+// // readableStream.on('data', chunk=>console.log(chunk.length);)
+// let data = "";
+// stream.on("data", (chunk) => (data += chunk));
+// stream.on("end", () => console.log("End", data));
+// stream.on("error", (error) => console.log("Error", error.message));
+
+//write
+const fs = require("fs");
+const zlib = require("zlib");
+const { pipeline } = require("stream");
+
+const input = fs.createReadStream("source.txt", "utf-8");
+const output = fs.createWriteStream("destination.txt");
+const gzip = zlib.createGzip();
+
+// input.on("data", (chunk) => output.write(chunk));
+// input.on("error", (error) => console.log("Error", error.message));
+input.pipe(gzip).pipe(output);
+
+pipeline(input, gzip, output, (err) => {
+  if (err) {
+    console.log("Error", error.message);
   }
-
-  sayHi() {
-    console.log(`Hi! My name is ${this.name}`);
-  }
-}
-
-const user = new User("Vasya", 12345);
-
-user.on("greetings", user.sayHi);
-
-user.emit("greetings");
+});
